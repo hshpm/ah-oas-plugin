@@ -32,6 +32,11 @@ module.exports = class Oas {
     this._setSecurityRequirementObjects()
     this._openApiDocument.paths = this._getPathsObject()
 
+    //dirty hack replace
+    const parampaths = {};
+    Object.entries(this._openApiDocument.paths).forEach(([key, value]) => parampaths[key.replace(/\/:(\w+)/g, "/{$1}")] = value);
+    this._openApiDocument.paths = parampaths;
+
     const tagObjects = this._getTagObjects()
     tagObjects && (this._openApiDocument.tags = tagObjects)
 
@@ -322,7 +327,7 @@ module.exports = class Oas {
   // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#requestBodyObject
   _getRequestBodyObject (action, bodyParams) {
     const requestBodyObject = {}
-    const componentName = `${action.name}_${action.version}`
+    const componentName = `${action.name.replace('/', "_slash_")}_${action.version}`
     let referenceObject = this._getReferenceObject('requestBodies', componentName)
 
     if (bodyParams.length === 0) {
@@ -401,7 +406,7 @@ module.exports = class Oas {
   // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#parameterObject
   _getParameterObject (action, input, name, route) {
     const parameterObject = {}
-    const componentName = `${action.name}_${action.version}_${name}`
+    const componentName = `${action.name.replace('/', "_slash_")}_${action.version}_${name}`
     let referenceObject = this._getReferenceObject('parameters', componentName)
 
     if (referenceObject) {
