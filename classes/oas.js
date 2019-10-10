@@ -441,6 +441,8 @@ module.exports = class Oas {
       }
     } else {
       parameterObject.schema = { type: input.type || 'string' }
+      if (input.enum)
+        parameterObject.schema.enum = input.enum;
     }
 
     input.style && (parameterObject.style = input.style)
