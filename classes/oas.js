@@ -34,7 +34,7 @@ module.exports = class Oas {
 
     //dirty hack replace
     const parampaths = {};
-    Object.entries(this._openApiDocument.paths).forEach(([key, value]) => parampaths[key.replace(/\/:(\w+)/g, "/{$1}")] = value);
+    Object.entries(this._openApiDocument.paths).forEach(([key, value]) => parampaths[key.replace(/\/:(\w+)[^\/]*/g, "/{$1}")] = value);
     this._openApiDocument.paths = parampaths;
 
     const tagObjects = this._getTagObjects()
